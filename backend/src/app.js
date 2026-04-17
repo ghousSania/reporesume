@@ -3,6 +3,7 @@ import helmet from "helmet";
 import { loggerMiddleware } from "./middleware/logger.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import authRouter from "./routes/auth.routes.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 // Middleware to parse JSON bodies
@@ -11,6 +12,8 @@ app.use(express.json());
 app.use(helmet());
 // Middleware for logging
 app.use(loggerMiddleware);
+// Middleware to parse cookies
+app.use(cookieParser());
 // Routes
 app.use("/auth", authRouter);
 

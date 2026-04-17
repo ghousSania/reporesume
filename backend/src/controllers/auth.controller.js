@@ -5,7 +5,7 @@ import {
   getGitHubAuthURL,
 } from "../services/githubAuth.service.js";
 import { generateAccessToken } from "../utils/generateToken.js";
-
+import { encrypt } from "../utils/encryption.js";
 /**
  * @description: Redirects the user to GitHub's OAuth page to initiate the authentication process.
  */
@@ -31,6 +31,9 @@ const githubCallback = async (req, res, next) => {
     // Exchange the authorization code for an access token
     const githubAccessToken = await exchangeCodeForToken(code);
 
+    // Encrypt the GitHub access token
+    const encryptedToken = encrypt(githubAccessToken);
+
     // Fetch the user's GitHub profile using the access token
     const githubUser = await getGitHubUser(githubAccessToken);
     // upsert user
@@ -43,7 +46,7 @@ const githubCallback = async (req, res, next) => {
         username: githubUser.username,
         displayName: githubUser.displayName,
         avatarUrl: githubUser.avatarUrl,
-        accessToken: githubAccessToken, // always update latest token
+        accessToken: encryptedToken, // always update latest token
       },
       {
         returnDocument: "after",
@@ -54,9 +57,14 @@ const githubCallback = async (req, res, next) => {
     // generate JWT Token
     const jwtToken = generateAccessToken(user);
 
-    // send token back to client
+    res.cookie("token", jwtToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     return res.status(200).json({
-      token: jwtToken,
       user,
     });
   } catch (error) {
