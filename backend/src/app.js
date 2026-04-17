@@ -2,6 +2,7 @@ import express from "express";
 import helmet from "helmet";
 import { loggerMiddleware } from "./middleware/logger.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
+import authRouter from "./routes/auth.routes.js";
 
 const app = express();
 // Middleware to parse JSON bodies
@@ -10,6 +11,9 @@ app.use(express.json());
 app.use(helmet());
 // Middleware for logging
 app.use(loggerMiddleware);
+// Routes
+app.use("/auth", authRouter);
+
 // Middleware for error handling
 app.use(errorHandler);
 

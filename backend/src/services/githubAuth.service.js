@@ -1,4 +1,4 @@
-const axios = require("axios");
+import axios from "axios";
 
 // Exchange the authorization code for an access token
 const exchangeCodeForToken = async (code) => {
@@ -28,6 +28,8 @@ const getGitHubUser = async (accessToken) => {
     const response = await axios.get("https://api.github.com/user", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        Accept: "application/vnd.github+json",
+        "User-Agent": "Node.js App",
       },
     });
 
@@ -46,4 +48,16 @@ const getGitHubUser = async (accessToken) => {
   }
 };
 
-export { exchangeCodeForToken, getGitHubUser };
+// Generate the GitHub OAuth URL
+const getGitHubAuthURL = () => {
+  const rootUrl = "https://github.com/login/oauth/authorize";
+
+  const params = new URLSearchParams({
+    client_id: process.env.GITHUB_CLIENT_ID,
+    scope: "read:user user:email",
+  });
+
+  return `${rootUrl}?${params.toString()}`;
+};
+
+export { exchangeCodeForToken, getGitHubUser, getGitHubAuthURL };
