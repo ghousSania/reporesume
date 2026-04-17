@@ -25,9 +25,9 @@ export const encrypt = (token) => {
 
   // Ensure string input
   const bufferText =
-    typeof text === "string"
-      ? Buffer.from(text, "utf-8")
-      : Buffer.from(String(text));
+    typeof token === "string"
+      ? Buffer.from(token, "utf-8")
+      : Buffer.from(String(token));
 
   let encrypted = cipher.update(bufferText);
   encrypted = Buffer.concat([encrypted, cipher.final()]);

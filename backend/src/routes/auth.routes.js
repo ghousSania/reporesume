@@ -3,6 +3,7 @@ import {
   redirectToGithub,
   githubCallback,
 } from "../controllers/auth.controller.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 
 const authRouter = Router();
 
@@ -13,4 +14,8 @@ authRouter.get("/github", redirectToGithub);
 // This route will be implemented to handle the exchange of the authorization code for an access token
 // and to fetch the user's GitHub profile information.
 authRouter.get("/github/callback", githubCallback);
+
+authRouter.get("/protected", authMiddleware, (req, res) => {
+  res.json({ message: "This is a protected route", user: req.user });
+});
 export default authRouter;
