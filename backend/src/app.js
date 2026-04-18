@@ -4,7 +4,7 @@ import { loggerMiddleware } from "./middleware/logger.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
-
+import userRouter from "./routes/user.routes.js";
 const app = express();
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -16,7 +16,7 @@ app.use(loggerMiddleware);
 app.use(cookieParser());
 // Routes
 app.use("/auth", authRouter);
-
+app.use("/user", userRouter);
 // Middleware for error handling
 app.use(errorHandler);
 

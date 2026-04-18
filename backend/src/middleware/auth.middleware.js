@@ -31,7 +31,7 @@ const authMiddleware = async (req, res, next) => {
 
     // find the user in the database
     const user = await User.findById(userId).select(
-      "_id username displayName avatarUrl",
+      "_id username displayName avatarUrl email createdAt",
     );
     if (!user) {
       const err = new Error("User not found");
